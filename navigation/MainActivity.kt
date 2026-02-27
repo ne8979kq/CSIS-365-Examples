@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNav() {
     val navController = rememberNavController()
+    val items = remember { mutableStateListOf<ListItem>() }
 
     NavHost(
         navController = navController,
@@ -44,15 +46,16 @@ fun AppNav() {
     ) {
         composable("list") {
             ListScreen(
-                //items = items,
-                onAddClick = { navController.navigate("Form") }
+                items = items,
+                onAddClick = { navController.navigate("form") }
             )
         }
 
         composable("form") {
             FormScreen(
                 onSave = { newItem ->
-                    //items.add(newItem)
+                    items.add(newItem)
+                    navController.popBackStack()
                 },
                 onCancel = {
                     navController.popBackStack()
@@ -64,9 +67,9 @@ fun AppNav() {
 
 @Composable
 fun ListScreen(
+    items: List<ListItem>,
     onAddClick: () -> Unit
 ) {
-    val items = remember { mutableStateListOf<ListItem>() }
 
     Scaffold(
         topBar = {
