@@ -1,0 +1,104 @@
+package com.example.myapplication
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import java.nio.file.WatchEvent
+import kotlin.random.Random
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            AppNav()
+        }
+    }
+}
+
+@Composable
+fun AppNav() {
+    val navController = rememberNavController()
+
+    NavHost(navController, startDestination = "roll") {
+        composable("roll") {
+            RollScreen(
+                onGoToResults = { roll -> navController.navigate("results/$roll")}
+            )
+        }
+        composable("results/{roll}") {
+            backStackEntry -> val roll =
+                backStackEntry.arguments?.getString("roll") ?: "?"
+            ResultsScreen(
+                roll = roll,
+                onBack = { navController.popBackStack() }
+            )
+        }
+    }
+}
+
+@Composable
+fun ResultsScreen(roll: String, onBack: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Last roll: $roll")
+        Spacer(modifier = Modifier.height(12.dp))
+        Button(onClick = onBack) {
+            Text("Back")
+        }
+    }
+}
+
+@Composable
+fun RollScreen(onGoToResults: (Int) -> Unit) {
+    val diceRoll = remember { mutableIntStateOf(1) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Dice Roll: ${diceRoll.intValue}",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { diceRoll.intValue = Random.nextInt(1, 7) }
+        ) {
+            Text("Roll Dice")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { onGoToResults(diceRoll.intValue) }
+        ) {
+            Text("Results")
+        }
+    }
+}
