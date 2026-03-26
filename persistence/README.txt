@@ -2,15 +2,14 @@ There are two important additions you must make to certain files when you use Ro
 
 The first is to build.gradle.kts at the app level (should say :app next to it). Add the following to the bottom of the dependencies:
 
-    val roomVersion = "2.8.4"
-        // Room runtime library - required for all Room functionality
-        implementation("androidx.room:room-runtime:$roomVersion")
+    // Room runtime library - required for all Room functionality
+    implementation(libs.androidx.room.runtime)
 
-        // KSP annotation processor - generates Room implementation code
-        ksp("androidx.room:room-compiler:$roomVersion")
+    // KSP annotation processor - generates Room implementation code
+    ksp(libs.androidx.room.compiler)
 
-        // Kotlin Extensions and Coroutines support - enables suspend functions
-        implementation("androidx.room:room-ktx:$roomVersion")
+    // Kotlin Extensions and Coroutines support - enables suspend functions
+    implementation(libs.androidx.room.ktx)
 
 And at the top, under plugins, add this single line:
 
