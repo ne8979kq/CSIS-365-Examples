@@ -1,15 +1,16 @@
 There are two important additions you must make to certain files when you use Room and coroutines. Both are located under the Gradle Scripts dropdown outside your whole project.
 
 The first is to build.gradle.kts at the app level (should say :app next to it). Add the following to the bottom of the dependencies:
-
+    
+    val roomVersion = "2.8.4" // variable for the below statements (just easier if it needs changing)
     // Room runtime library - required for all Room functionality
-    implementation(libs.androidx.room.runtime)
+    implementation("androidx.room:room-runtime:$roomVersion")
 
     // KSP annotation processor - generates Room implementation code
-    ksp(libs.androidx.room.compiler)
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Kotlin Extensions and Coroutines support - enables suspend functions
-    implementation(libs.androidx.room.ktx)
+    implementation("androidx.room:room-ktx:$roomVersion")
 
 And at the top, under plugins, add this single line:
 
