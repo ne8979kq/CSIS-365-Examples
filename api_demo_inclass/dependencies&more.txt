@@ -1,0 +1,48 @@
+There are a few steps we need to take before things will run as expected.
+
+First, get the demo skeleton running without adding anything special - normal imports, normal dependency additions; just get rid of all the red!
+
+Once that's running, we'll make our first change - adding Internet permission to the manifest. Open the AndroidManifest.xml file in your project and add this under the <manifest (but before <application !):
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+You can sync the changes if you like, but we'll do that soon anyway. Next up, open the build.gradle.kts (:app) and add the following under dependencies:
+
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+Now we should be ready to replace our DogScreen code with the code from the corresponding file. Run it! Is it working??
+
+Next up, we'll do the PokemonScreen. You shouldn't need to add anything more for this one - replace the code and run!
+
+For our last example, we need to add a couple things again. First, you'll want to open a file called local.properties (located under the Gradle Scripts section in Android Studio near the bottom). Add the following to the bottom of the file:
+
+    OPENWEATHER_API_KEY=your_api_key_here
+
+You'll have to get your own key! Go to https://openweathermap.org/ and click 'get API key'. You'll have to create an account - use your school credentials, and make your own key. Copy it and replace the above with your real key.
+
+The last thing to do is head back to build.gradle.kts (:app). Add the following between plugins {} and android {}:
+
+    val localProperties = Properties().apply {
+        val localFile = rootProject.file("local.properties")
+        if (localFile.exists()) {
+            localFile.inputStream().use { load(it) }
+        }
+    }
+
+    val weatherKey = localProperties.getProperty("OPENWEATHER_API_KEY", "")
+
+And this at the bottom of defaultConfig {}:
+
+    buildConfigField("String", "OPENWEATHER_API_KEY", "\"$weatherKey\"")
+
+Also, add this under buildFeatures:
+
+    buildConfig = true
+
+That's it! Replace the code in WeatherScreen.kt and run your app one final time. All 3 screens should now be functional.
